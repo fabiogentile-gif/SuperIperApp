@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:superiper_app/pages/homepage.dart';
-import 'package:superiper_app/pages/settings.dart';
 import 'package:superiper_app/router/router.dart';
 
 class AppShell extends StatefulWidget {
