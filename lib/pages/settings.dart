@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/widgets/app_bar.dart';
 import 'package:superiper_app/widgets/settings/brightness_selector.dart';
 import 'package:superiper_app/widgets/settings/setting_group.dart';
 import 'package:superiper_app/widgets/settings/setting_tile.dart';
@@ -12,26 +13,10 @@ class Settings extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
+      appBar: StandardAppBar(title: 'Impostazioni', subtitle: 'Personalizza l\'aspetto e il comportamento dell\'app'),
       body: ListView(
         children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(16, 24, 16, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Impostazioni',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Personalizza l\'aspetto e il comportamento dell\'app',
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: colors.onSurfaceVariant),
-                ),
-              ],
-            ),
-          ),const SizedBox(height: 20),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(

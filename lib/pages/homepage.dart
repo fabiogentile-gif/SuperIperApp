@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     final cards = _filteredCards;
 
     return Scaffold(
-      appBar: const StandardAppBar(),
+      appBar: const StandardAppBar(title: 'Le tue carte',subtitle: 'Tutte le tue carte fedeltà  in un posto solo',),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
