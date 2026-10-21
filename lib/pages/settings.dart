@@ -14,13 +14,24 @@ class Settings extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(16, 24, 16, 20),
-            child: Text(
-              'Impostazioni',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Impostazioni',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Personalizza l\'aspetto e il comportamento dell\'app',
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: colors.onSurfaceVariant),
+                ),
+              ],
             ),
-          ),
+          ),const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
