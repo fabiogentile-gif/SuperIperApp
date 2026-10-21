@@ -6,6 +6,8 @@ class ThemeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeMode,
       builder: (context, mode, _) {
@@ -13,20 +15,21 @@ class ThemeSelector extends StatelessWidget {
           width: double.infinity,
           child: SegmentedButton<ThemeMode>(
             showSelectedIcon: false,
+            style: SegmentedButton.styleFrom(
+              selectedBackgroundColor: cs.primaryContainer,
+              selectedForegroundColor: cs.primary,
+            ),
             segments: const [
               ButtonSegment(
                 value: ThemeMode.system,
-                icon: Icon(Icons.brightness_auto),
                 label: Text('Sistema'),
               ),
               ButtonSegment(
                 value: ThemeMode.dark,
-                icon: Icon(Icons.dark_mode),
                 label: Text('Scuro'),
               ),
               ButtonSegment(
                 value: ThemeMode.light,
-                icon: Icon(Icons.light_mode),
                 label: Text('Chiaro'),
               ),
             ],

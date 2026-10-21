@@ -5,14 +5,16 @@ class SettingTile extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
-    this.trailing,
-    this.child,
+    required this.icon,
+    this.rowChild,
+    this.columnChild,
   });
 
   final String title;
   final String? subtitle;
-  final Widget? trailing; // a destra di titolo/sottotitolo
-  final Widget? child; // sotto titolo/sottotitolo
+  final IconData icon;
+  final Widget? rowChild; // a destra di titolo/sottotitolo
+  final Widget? columnChild; // sotto titolo/sottotitolo
 
   @override
   Widget build(BuildContext context) {
@@ -41,19 +43,20 @@ class SettingTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (trailing != null)
-            Row(
-              children: [
-                Expanded(child: header),
-                const SizedBox(width: 12),
-                trailing!,
-              ],
-            )
-          else
-            header,
-          if (child != null) ...[
+          Row(
+            children: [
+              SizedBox(
+                width: 24,
+                child: Icon(icon, size: 24, color: cs.onSurfaceVariant),
+              ),
+              const SizedBox(width: 16),
+              Expanded(child: header),
+              if (rowChild != null) ...[const SizedBox(width: 12), rowChild!],
+            ],
+          ),
+          if (columnChild != null) ...[
             const SizedBox(height: 14),
-            child!,
+            columnChild!,
           ],
         ],
       ),

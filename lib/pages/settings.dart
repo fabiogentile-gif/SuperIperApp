@@ -39,7 +39,8 @@ class Settings extends StatelessWidget {
                     SettingTile(
                       title: 'Tema',
                       subtitle: 'Scegli l\'aspetto dell\'app',
-                      child: ThemeSelector(),
+                      icon: Icons.palette_outlined,
+                      columnChild: ThemeSelector(),
                     ),
                   ],
                 ),
@@ -63,12 +64,30 @@ class Settings extends StatelessWidget {
                 const SettingsGroup(
                   children: [
                     SettingTile(
-                      title: 'Tema',
-                      subtitle: 'Scegli l\'aspetto dell\'app',
-                      trailing: BrightnessSelector(),
+                      title: 'Luminosità automatica',
+                      subtitle: 'Aumenta quando mostri una carta',
+                      icon: Icons.wb_sunny_outlined,
+                      rowChild: BrightnessSelector(),
                     ),
                   ],
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Informazioni sull\'app',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
               ],
             ),
           ),
