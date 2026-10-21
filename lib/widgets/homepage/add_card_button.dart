@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AddCardButton extends StatelessWidget {
@@ -6,6 +5,8 @@ class AddCardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
@@ -13,6 +14,8 @@ class AddCardButton extends StatelessWidget {
         icon: const Icon(Icons.add),
         label: const Text('Aggiungi carta'),
         style: OutlinedButton.styleFrom(
+          backgroundColor: colors.primary,
+          foregroundColor: colors.onPrimary,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

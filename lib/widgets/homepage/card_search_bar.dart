@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CardSearchBar extends StatelessWidget {
@@ -19,19 +18,25 @@ class CardSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      child: SearchBar(
-        controller: controller,
-        hintText: 'Cerca una carta',
-        leading: const Icon(Icons.search),
-        elevation: const WidgetStatePropertyAll(0),
-        onChanged: onChanged,
-        trailing: [
-          if (query.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: onClear,
-            ),
-        ],
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: SearchBar(
+          controller: controller,
+          hintText: 'Cerca una carta',
+          leading: const Icon(Icons.search),
+          elevation: const WidgetStatePropertyAll(0),
+          onChanged: onChanged,
+          trailing: [
+            if (query.isNotEmpty)
+              IconButton(icon: const Icon(Icons.close), onPressed: onClear),
+          ],
+        ),
       ),
     );
   }
