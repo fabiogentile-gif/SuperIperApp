@@ -29,17 +29,6 @@ class LoyaltyCard {
   });
 }
 
-abstract final class _C {
-  static const sheet = Color(0xFFFFFBF5);
-  static const line = Color(0xFFD8CCBB);
-  static const chip = Color(0xFFF6F1E9);
-  static const text = Color(0xFF1F1B18);
-  static const muted = Color(0xFF6A5F55);
-  static const bars = Color(0xFF171B26);
-  static const editBg = Color(0xFFF6D9C9);
-  static const editFg = Color(0xFFB4532A);
-}
-
 Future<void> showCardDetailsSheet(
   BuildContext context,
   LoyaltyCard card, {
@@ -49,7 +38,7 @@ Future<void> showCardDetailsSheet(
     context: context,
     useRootNavigator: true, // copre anche la bottom bar della shell
     isScrollControlled: true,
-    backgroundColor: _C.sheet,
+    backgroundColor: Theme.of(context).colorScheme.surface,
     clipBehavior: Clip.antiAlias,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
@@ -80,6 +69,8 @@ class _CardDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return SafeArea(
       top: false,
       minimum: const EdgeInsets.only(bottom: 34),
@@ -93,7 +84,7 @@ class _CardDetailsSheet extends StatelessWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: _C.line,
+                color: colors.outline,
                 borderRadius: BorderRadius.circular(100),
               ),
             ),
@@ -105,20 +96,20 @@ class _CardDetailsSheet extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Dettagli carta',
-                    style: TextStyle(fontSize: 20, color: _C.text),
+                    style: TextStyle(fontSize: 20, color: colors.onSurfaceVariant),
                   ),
                   Material(
-                    color: _C.chip,
+                    color: colors.surfaceContainerHighest,
                     shape: const CircleBorder(),
                     child: InkWell(
                       customBorder: const CircleBorder(),
                       onTap: onClose,
-                      child: const SizedBox(
+                      child: SizedBox(
                         width: 32,
                         height: 32,
-                        child: Icon(Icons.close, size: 18, color: _C.text),
+                        child: Icon(Icons.close, size: 18, color: colors.onSurfaceVariant),
                       ),
                     ),
                   ),
@@ -194,14 +185,14 @@ class _CardDetailsSheet extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(
-                border: Border.all(color: _C.line),
+                border: Border.all(color: colors.outline),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'Mostra il codice alla cassa',
-                    style: TextStyle(fontSize: 13, color: _C.muted),
+                    style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -211,17 +202,17 @@ class _CardDetailsSheet extends StatelessWidget {
                       barcode: Barcode.code128(),
                       data: card.code.replaceAll(' ', ''),
                       drawText: false,
-                      color: _C.bars,
+                      color: Colors.black,
                       backgroundColor: Colors.white, // necessario per lo scanner
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     _group(card.code),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: _C.text,
+                      color: colors.onSurface,
                     ),
                   ),
                 ],
@@ -248,22 +239,22 @@ class _CardDetailsSheet extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: Material(
-                color: _C.editBg,
+                color: colors.primaryContainer,
                 borderRadius: BorderRadius.circular(16),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: onEdit,
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.edit_outlined, size: 18, color: _C.editFg),
+                      Icon(Icons.edit_outlined, size: 18, color: colors.primary),
                       SizedBox(width: 8),
                       Text(
                         'Modifica carta',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: _C.editFg,
+                          color: colors.primary,
                         ),
                       ),
                     ],
@@ -288,14 +279,14 @@ class _Info extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 12, color: _C.muted)),
+        Text(label, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
         const SizedBox(height: 6),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: _C.text,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
