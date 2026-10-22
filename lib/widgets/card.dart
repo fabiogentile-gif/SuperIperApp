@@ -9,8 +9,7 @@ class MiaCard extends StatelessWidget {
 
   const MiaCard({
     super.key,
-    required this.titolo,
-    required this.descrizione,
+    required this.titolo,    required this.descrizione,
     required this.icona,
     required this.colore,
   });
