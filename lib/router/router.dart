@@ -25,14 +25,13 @@ class AppRoutes {
   static Route<dynamic>? onGenerateTab(RouteSettings settings) {
     final Widget page;
     switch (settings.name) {
-      case homepage:
-        page = const HomePage();
       case setting:
         page = const Settings();
       case favorites:
         page = const Favorites();
+      case homepage:
       default:
-        return null;
+        page = const HomePage();
     }
     // senza animazione: i tab non devono scorrere
     return PageRouteBuilder(

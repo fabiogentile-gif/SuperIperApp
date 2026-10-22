@@ -39,7 +39,7 @@ class CardGrid extends StatelessWidget {
         ),
         itemCount: cards.length,
         itemBuilder: (context, index) {
-          return CardTile(name: cards[index]);
+          return CardTile(name: cards[index],code: '12344',);
         },
       ),
     );
