@@ -9,53 +9,67 @@ class AddCardButton extends StatefulWidget {
 
 class _AddCardButtonState extends State<AddCardButton> {
   bool _isExpanded = false;
+  final _nameController = TextEditingController();
+  final _codeController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _codeController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    final name = _nameController.text.trim();
+    final code = _codeController.text.trim();
+    if (name.isEmpty || code.isEmpty) return;
+
+    // TODO: salva la carta (name, code)
+
+    _nameController.clear();
+    _codeController.clear();
+    setState(() => _isExpanded = false);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 1. BOTTONE
         SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {
-              setState(() {
-                _isExpanded = !_isExpanded;
-              });
-            },
-            icon: Icon(_isExpanded ? Icons.remove : Icons.add),
-            label: Text(_isExpanded ? 'Chiudi' : 'Aggiungi carta'),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+          height: 50,
+          child: FilledButton.icon(
+            onPressed: () => setState(() => _isExpanded = !_isExpanded),
+            icon: Icon(_isExpanded ? Icons.close : Icons.add),
+            label: Text(_isExpanded ? 'Annulla' : 'Aggiungi carta'),
+            style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
         ),
-
-        // 2. CARD CHE SI APRE SOTTO
         AnimatedSize(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
           child: _isExpanded
               ? Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
+                  padding: const EdgeInsets.only(top: 16),
                   child: Container(
-                    width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(color: colors.outlineVariant),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: colors.shadow.withValues(alpha: 0.05),
                           blurRadius: 10,
-                          offset: const Offset(0,4),
+                          offset: const Offset(0, 4),
                         ),
-
                       ],
                     ),
                     child: Column(
@@ -70,8 +84,9 @@ class _AddCardButtonState extends State<AddCardButton> {
                         ),
                         const SizedBox(height: 12),
                         TextField(
+                          controller: _nameController,
                           decoration: InputDecoration(
-                            labelText: "Nome della carta",
+                            labelText: 'Nome della carta',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -79,8 +94,9 @@ class _AddCardButtonState extends State<AddCardButton> {
                         ),
                         const SizedBox(height: 12),
                         TextField(
+                          controller: _codeController,
                           decoration: InputDecoration(
-                            labelText: "codice a barre/numero",
+                            labelText: 'Codice a barre / numero',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -90,14 +106,10 @@ class _AddCardButtonState extends State<AddCardButton> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
-                            onPressed: (){
-                              setState(() {
-                                _isExpanded=false;
-                              });
-                            },
+                            onPressed: _save,
                             child: const Text('Salva Carta'),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
