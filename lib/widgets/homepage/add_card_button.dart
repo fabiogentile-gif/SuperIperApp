@@ -9,6 +9,7 @@ class AddCardButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
+      height: 50,
       child: OutlinedButton.icon(
         onPressed: () {},
         icon: const Icon(Icons.add),

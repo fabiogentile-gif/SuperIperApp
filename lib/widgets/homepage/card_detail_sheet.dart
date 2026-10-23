@@ -187,12 +187,13 @@ class _CardDetailsSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border.all(color: colors.outline),
                 borderRadius: BorderRadius.circular(16),
+                color: Colors.white
               ),
               child: Column(
                 children: [
                   Text(
                     'Mostra il codice alla cassa',
-                    style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
+                    style: TextStyle(fontSize: 13, color: Colors.black),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -212,7 +213,7 @@ class _CardDetailsSheet extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: colors.onSurface,
+                      color: Colors.black,
                     ),
                   ),
                 ],
