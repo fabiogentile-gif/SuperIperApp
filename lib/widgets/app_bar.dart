@@ -17,6 +17,7 @@ class StandardAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       toolbarHeight: 72,
+      automaticallyImplyLeading: false,
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: Column(
