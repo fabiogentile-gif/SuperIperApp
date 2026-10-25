@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:superiper_app/pages/homepage.dart';
-import 'package:superiper_app/pages/settings.dart';
 import 'package:superiper_app/router/router.dart';
 
 class AppShell extends StatefulWidget {
@@ -14,7 +12,11 @@ class _AppShellState extends State<AppShell> {
   final _navKey = GlobalKey<NavigatorState>();
   int _index = 0;
 
-  static const _tabs = [AppRoutes.homepage,AppRoutes.favorites,AppRoutes.setting];
+  static const _tabs = [
+    AppRoutes.homepage,
+    AppRoutes.favorites,
+    AppRoutes.setting,
+  ];
 
   void _onTap(int i) {
     if (i == _index) return;
