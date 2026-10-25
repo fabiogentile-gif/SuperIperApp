@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/providers/card_provider.dart';
 import 'package:superiper_app/widgets/app_bar.dart';
 import 'package:superiper_app/widgets/homepage/add_card_button.dart';
 import 'package:superiper_app/widgets/homepage/card_search_bar.dart';
 import 'package:superiper_app/widgets/homepage/card_grid.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final CardProvider cardProvider;
+
+  const HomePage({super.key, required this.cardProvider});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -13,32 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _searchController = TextEditingController();
-  final _allCards = <Map<String, String>>[];
-
   String _query = '';
-
-  List<Map<String, String>> get _filteredCards {
-    final q = _query.trim().toLowerCase();
-
-    if (q.isEmpty) return _allCards;
-
-    return _allCards.where((card) =>
-        (card['name'] ?? '').toLowerCase().contains(q)).toList();
-  }
-
-  void _updateQuery(String value) {
-    setState(() {
-      _query = value;
-    });
-  }
-
-  void _clearSearch() {
-    _searchController.clear();
-
-    setState(() {
-      _query = '';
-    });
-  }
 
   @override
   void dispose() {
@@ -46,14 +24,27 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  List<Map<String, String>> _filter(List<Map<String, String>> all) {
+    final q = _query.trim().toLowerCase();
+    if (q.isEmpty) return all;
+    return all
+        .where((c) => (c['name'] ?? '').toLowerCase().contains(q))
+        .toList();
+  }
+
+  void _updateQuery(String value) => setState(() => _query = value);
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _query = '');
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cards = _filteredCards;
-
     return Scaffold(
       appBar: const StandardAppBar(
         title: 'Le tue carte',
-        subtitle: 'Tutte le tue carte fedeltà  in un posto solo',
+        subtitle: 'Tutte le tue carte fedeltà in un posto solo',
       ),
       body: Column(
         children: [
@@ -64,17 +55,17 @@ class _HomePageState extends State<HomePage> {
             onClear: _clearSearch,
           ),
           Expanded(
-            child: CardGrid(cards: cards),
+            child: ListenableBuilder(
+              listenable: widget.cardProvider,
+              builder: (context, _) =>
+                  CardGrid(cards: _filter(widget.cardProvider.cards)),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: AddCardButton(onSave: (name, code) {
-              setState(() {
-                _allCards.add({
-                  'name': name,
-                  'code': code,
-                });
-              });
+              widget.cardProvider.addCard(name, code);
+              _clearSearch();
             }),
           ),
         ],

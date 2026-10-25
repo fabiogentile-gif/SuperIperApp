@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:superiper_app/pages/favorites.dart';
 import 'package:superiper_app/pages/homepage.dart';
 import 'package:superiper_app/pages/settings.dart';
+import 'package:superiper_app/providers/card_provider.dart';
 import 'package:superiper_app/shell.dart';
 
 class AppRoutes {
   static const root = '/';
-
   static const homepage = '/homepage';
   static const setting = '/settings';
   static const favorites = '/favorites';
+
+  // creato una sola volta per tutta l'app
+  static final CardProvider cardProvider = CardProvider();
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -31,12 +34,11 @@ class AppRoutes {
         page = const Favorites();
       case homepage:
       default:
-        page = const HomePage();
+        page = HomePage(cardProvider: cardProvider);
     }
-    // senza animazione: i tab non devono scorrere
     return PageRouteBuilder(
       settings: settings,
-      pageBuilder: (_, _, _) => page,
+      pageBuilder: (_, __, ___) => page,
       transitionDuration: Duration.zero,
       reverseTransitionDuration: Duration.zero,
     );
