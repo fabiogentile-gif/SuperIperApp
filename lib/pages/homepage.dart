@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _searchController = TextEditingController();
-  final _allCards = List.generate(6, (i) => 'Carta ${i + 1}');
+  final _allCards = <String>[];
 
   String _query = '';
 
@@ -50,27 +50,27 @@ class _HomePageState extends State<HomePage> {
     final cards = _filteredCards;
 
     return Scaffold(
-      appBar: const StandardAppBar(title: 'Le tue carte',subtitle: 'Tutte le tue carte fedeltà  in un posto solo',),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: CardSearchBar(
-              controller: _searchController,
-              query: _query,
-              onChanged: _updateQuery,
-              onClear: _clearSearch,
-            ),
+      appBar: const StandardAppBar(
+        title: 'Le tue carte',
+        subtitle: 'Tutte le tue carte fedeltà  in un posto solo',
+      ),
+      body: Column(
+        children: [
+          CardSearchBar(
+            controller: _searchController,
+            query: _query,
+            onChanged: _updateQuery,
+            onClear: _clearSearch,
           ),
-          CardGrid(cards: cards),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: AddCardButton(),
-            ),
+          Expanded(
+            child: CustomScrollView(slivers: [CardGrid(cards: cards)]),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: AddCardButton(),
           ),
         ],
       ),
-      
     );
   }
 }
