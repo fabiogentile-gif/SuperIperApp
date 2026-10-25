@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AddCardButton extends StatefulWidget {
-  const AddCardButton({super.key});
+  final Function(String, String) onSave;
+
+  const AddCardButton({super.key, required this.onSave});
 
   @override
   State<AddCardButton> createState() => _AddCardButtonState();
@@ -24,7 +26,7 @@ class _AddCardButtonState extends State<AddCardButton> {
     final code = _codeController.text.trim();
     if (name.isEmpty || code.isEmpty) return;
 
-    // TODO: salva la carta (name, code)
+    widget.onSave(name, code);
 
     _nameController.clear();
     _codeController.clear();

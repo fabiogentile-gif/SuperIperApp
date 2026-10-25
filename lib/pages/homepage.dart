@@ -13,16 +13,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _searchController = TextEditingController();
-  final _allCards = <String>[];
+  final _allCards = <Map<String, String>>[];
 
   String _query = '';
 
-  List<String> get _filteredCards {
+  List<Map<String, String>> get _filteredCards {
     final q = _query.trim().toLowerCase();
 
     if (q.isEmpty) return _allCards;
 
-    return _allCards.where((name) => name.toLowerCase().contains(q)).toList();
+    return _allCards.where((card) =>
+        (card['name'] ?? '').toLowerCase().contains(q)).toList();
   }
 
   void _updateQuery(String value) {
@@ -63,11 +64,18 @@ class _HomePageState extends State<HomePage> {
             onClear: _clearSearch,
           ),
           Expanded(
-            child: CustomScrollView(slivers: [CardGrid(cards: cards)]),
+            child: CardGrid(cards: cards),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: AddCardButton(),
+            child: AddCardButton(onSave: (name, code) {
+              setState(() {
+                _allCards.add({
+                  'name': name,
+                  'code': code,
+                });
+              });
+            }),
           ),
         ],
       ),

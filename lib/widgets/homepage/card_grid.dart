@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'card_tile.dart';
 
 class CardGrid extends StatelessWidget {
-  final List<String> cards;
+  final List<Map<String, String>> cards;
 
   const CardGrid({
     super.key,
@@ -15,9 +15,9 @@ class CardGrid extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     if (cards.isEmpty) {
-      return SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Text(
             'Nessuna carta trovata',
             style: TextStyle(
@@ -28,9 +28,9 @@ class CardGrid extends StatelessWidget {
       );
     }
 
-    return SliverPadding(
+    return Padding(
       padding: const EdgeInsets.all(16),
-      sliver: SliverGrid.builder(
+      child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: 12,
@@ -39,7 +39,12 @@ class CardGrid extends StatelessWidget {
         ),
         itemCount: cards.length,
         itemBuilder: (context, index) {
-          return CardTile(name: cards[index],code: '9820 4512 7308 64',);
+          final card = cards[index];
+          return CardTile(
+            name: card['name'] ?? 'Carta',
+            code: card['code'] ?? '',
+            icon: Icons.credit_card,
+          );
         },
       ),
     );
