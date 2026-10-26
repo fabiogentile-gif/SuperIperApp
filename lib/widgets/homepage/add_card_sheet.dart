@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/models/loyalty_card.dart';
+import 'package:superiper_app/providers/card_provider.dart';
 import 'package:superiper_app/widgets/settings/utils/default_holder_controller.dart';
 
 class NewCardData {
@@ -26,10 +28,47 @@ Future<NewCardData?> showAddCardSheet(BuildContext context) {
   );
 }
 
+Future<void> showEditCardSheet(
+  BuildContext context,
+  LoyaltyCard card, {
+  required CardProvider provider,
+}) async {
+  final result = await showModalBottomSheet<NewCardData>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => AddCardSheet(
+      initialCard: card,
+      title: 'Modifica carta',
+      submitLabel: 'Salva modifiche',
+    ),
+  );
+
+  if (result == null) return;
+
+  provider.updateCard(
+    card.code,
+    name: result.storeName,
+    code: result.number,
+    category: result.category,
+    holder: result.holder,
+  );
+}
+
 enum _InputMode { scan, manual }
 
 class AddCardSheet extends StatefulWidget {
-  const AddCardSheet({super.key});
+  const AddCardSheet({
+    super.key,
+    this.initialCard,
+    this.title = 'Aggiungi carta',
+    this.submitLabel = 'Crea carta',
+  });
+
+  final LoyaltyCard? initialCard;
+  final String title;
+  final String submitLabel;
 
   @override
   State<AddCardSheet> createState() => _AddCardSheetState();
@@ -49,6 +88,21 @@ class _AddCardSheetState extends State<AddCardSheet> {
   final _holder = TextEditingController(text: defaultHolderName.value);
   _InputMode _mode = _InputMode.manual; // TODO: modalità scansione
   String _category = _categories.first;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final card = widget.initialCard;
+    if (card != null) {
+      _store.text = card.name;
+      _number.text = card.code;
+      _holder.text = card.holder;
+      if (card.category.isNotEmpty) {
+        _category = card.category;
+      }
+    }
+  }
 
   bool get _canSubmit =>
       _store.text.trim().isNotEmpty && _number.text.trim().isNotEmpty;
@@ -110,7 +164,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Aggiungi carta',
+                      widget.title,
                       style: TextStyle(fontSize: 20, color: colors.onSurface),
                     ),
                     Material(
@@ -306,7 +360,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
                             Icon(Icons.add, size: 21, color: colors.onPrimary),
                             const SizedBox(width: 10),
                             Text(
-                              'Crea carta',
+                              widget.submitLabel,
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
