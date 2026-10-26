@@ -2,36 +2,13 @@ import 'dart:math' show min;
 
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
-
-class LoyaltyCard {
-  final String name;
-  final String code;
-  final String tagline;
-  final String category;
-  final String holder;
-  final String type;
-  final IconData icon;
-  final Color color;
-  final Color onColor;
-  final bool isFavorite;
-
-  const LoyaltyCard({
-    required this.name,
-    required this.code,
-    this.tagline = '',
-    this.category = '',
-    this.holder = '',
-    this.type = 'Carta fedeltà',
-    this.icon = Icons.eco_outlined,
-    this.color = const Color(0xFFDBEFE3),
-    this.onColor = const Color(0xFF285943),
-    this.isFavorite = false,
-  });
-}
+import 'package:superiper_app/models/loyalty_card.dart';
+import 'package:superiper_app/providers/card_provider.dart';
 
 Future<void> showCardDetailsSheet(
   BuildContext context,
   LoyaltyCard card, {
+  required CardProvider provider,
   VoidCallback? onEdit,
 }) {
   return showModalBottomSheet<void>(
@@ -45,6 +22,7 @@ Future<void> showCardDetailsSheet(
     ),
     builder: (sheetContext) => _CardDetailsSheet(
       card: card,
+      provider: provider,
       onClose: () => Navigator.of(sheetContext).pop(),
       onEdit: onEdit == null
           ? null
@@ -59,11 +37,13 @@ Future<void> showCardDetailsSheet(
 class _CardDetailsSheet extends StatelessWidget {
   const _CardDetailsSheet({
     required this.card,
+    required this.provider,
     required this.onClose,
     this.onEdit,
   });
 
   final LoyaltyCard card;
+  final CardProvider provider;
   final VoidCallback onClose;
   final VoidCallback? onEdit;
 
@@ -98,7 +78,10 @@ class _CardDetailsSheet extends StatelessWidget {
                 children: [
                   Text(
                     'Dettagli carta',
-                    style: TextStyle(fontSize: 20, color: colors.onSurfaceVariant),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: colors.onSurfaceVariant,
+                    ),
                   ),
                   Material(
                     color: colors.surfaceContainerHighest,
@@ -109,7 +92,11 @@ class _CardDetailsSheet extends StatelessWidget {
                       child: SizedBox(
                         width: 32,
                         height: 32,
-                        child: Icon(Icons.close, size: 18, color: colors.onSurfaceVariant),
+                        child: Icon(
+                          Icons.close,
+                          size: 18,
+                          color: colors.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   ),
@@ -153,18 +140,29 @@ class _CardDetailsSheet extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Icon(
-                        card.isFavorite ? Icons.star : Icons.star_border,
-                        size: 20,
-                        color: card.onColor,
+                      ListenableBuilder(
+                        listenable: provider,
+                        builder: (_, __) => InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () => provider.toggleFavorite(card.code),
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: Icon(
+                              provider.isFavorite(card.code)
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              size: 20,
+                              color: card.onColor,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(card.tagline,
-                          style: TextStyle(fontSize: 12, color: card.onColor)),
                       Text(
                         card.category,
                         style: TextStyle(
@@ -187,7 +185,7 @@ class _CardDetailsSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border.all(color: colors.outline),
                 borderRadius: BorderRadius.circular(16),
-                color: Colors.white
+                color: Colors.white,
               ),
               child: Column(
                 children: [
@@ -204,7 +202,8 @@ class _CardDetailsSheet extends StatelessWidget {
                       data: card.code.replaceAll(' ', ''),
                       drawText: false,
                       color: Colors.black,
-                      backgroundColor: Colors.white, // necessario per lo scanner
+                      backgroundColor:
+                          Colors.white, // necessario per lo scanner
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -227,9 +226,13 @@ class _CardDetailsSheet extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: _Info(label: 'Intestatario', value: card.holder)),
+                  Expanded(
+                    child: _Info(label: 'Intestatario', value: card.holder),
+                  ),
                   const SizedBox(width: 28),
-                  Expanded(child: _Info(label: 'Tipo di carta', value: card.type)),
+                  Expanded(
+                    child: _Info(label: 'Tipo di carta', value: card.type),
+                  ),
                 ],
               ),
             ),
@@ -248,7 +251,11 @@ class _CardDetailsSheet extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.edit_outlined, size: 18, color: colors.primary),
+                      Icon(
+                        Icons.edit_outlined,
+                        size: 18,
+                        color: colors.primary,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Modifica carta',
@@ -280,7 +287,13 @@ class _Info extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
         const SizedBox(height: 6),
         Text(
           value,

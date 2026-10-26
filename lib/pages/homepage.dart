@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/models/loyalty_card.dart';
 import 'package:superiper_app/providers/card_provider.dart';
 import 'package:superiper_app/widgets/app_bar.dart';
 import 'package:superiper_app/widgets/homepage/add_card_button.dart';
@@ -25,12 +26,10 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  List<Map<String, String>> _filter(List<Map<String, String>> all) {
+  List<LoyaltyCard> _filter(List<LoyaltyCard> all) {
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return all;
-    return all
-        .where((c) => (c['name'] ?? '').toLowerCase().contains(q))
-        .toList();
+    return all.where((c) => (c.name).toLowerCase().contains(q)).toList();
   }
 
   void _updateQuery(String value) => setState(() => _query = value);
@@ -58,8 +57,10 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: ListenableBuilder(
               listenable: widget.cardProvider,
-              builder: (context, _) =>
-                  CardGrid(cards: _filter(widget.cardProvider.cards)),
+              builder: (context, _) => CardGrid(
+                cards: _filter(widget.cardProvider.cards),
+                cardProvider: widget.cardProvider,
+              ),
             ),
           ),
           Padding(
@@ -67,10 +68,12 @@ class _HomePageState extends State<HomePage> {
             child: AddCardButton(
               onSave: (NewCardData data) {
                 widget.cardProvider.addCard(
-                  data.storeName,
-                  data.number,
-                  data.holder,
-                  data.category,
+                  LoyaltyCard(
+                    name: data.storeName,
+                    code: data.number,
+                    holder: data.holder,
+                    category: data.category,
+                  ),
                 );
                 _clearSearch();
               },

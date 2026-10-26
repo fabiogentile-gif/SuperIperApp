@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/models/loyalty_card.dart';
+import 'package:superiper_app/providers/card_provider.dart';
+import 'package:superiper_app/widgets/homepage/card_detail_sheet.dart';
 
 import 'card_tile.dart';
 
 class CardGrid extends StatelessWidget {
-  final List<Map<String, String>> cards;
+  final List<LoyaltyCard> cards;
+  final CardProvider cardProvider;
 
-  const CardGrid({super.key, required this.cards});
+  const CardGrid({
+    super.key,
+    required this.cards,
+    required this.cardProvider,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +44,13 @@ class CardGrid extends StatelessWidget {
         itemBuilder: (context, index) {
           final card = cards[index];
           return CardTile(
-            name: card['name'] ?? 'Carta',
-            code: card['code'] ?? '',
-            holder: card['holder'] ?? '',
-            category: card['category'] ?? '',
+            name: card.name,
             icon: Icons.credit_card,
+            onTap: () => showCardDetailsSheet(
+              context,
+              card,
+              provider: cardProvider,
+            ),
           );
         },
       ),

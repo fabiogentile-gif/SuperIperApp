@@ -31,7 +31,7 @@ class AppRoutes {
       case setting:
         page = const Settings();
       case favorites:
-        page = const Favorites();
+        page = Favorites( cardProvider: cardProvider);
       case homepage:
       default:
         page = HomePage(cardProvider: cardProvider);
