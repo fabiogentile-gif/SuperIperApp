@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/widgets/segments.dart';
 import 'package:superiper_app/widgets/settings/utils/default_holder_controller.dart';
 
 class NewCardData {
@@ -162,7 +163,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(
-                      child: _Segment(
+                      child: Segment(
                         label: 'Scansiona',
                         icon: Icons.document_scanner_outlined,
                         iconSize: 17,
@@ -172,7 +173,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
                     ),
                     const SizedBox(width: 4),
                     Expanded(
-                      child: _Segment(
+                      child: Segment(
                         label: 'A mano',
                         icon: Icons.edit_outlined,
                         iconSize: 16,
@@ -322,55 +323,6 @@ class _AddCardSheetState extends State<AddCardSheet> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Segment extends StatelessWidget {
-  const _Segment({
-    required this.label,
-    required this.icon,
-    required this.iconSize,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final IconData icon;
-  final double iconSize;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final color = selected ? colors.primary : colors.onSurfaceVariant;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: selected ? colors.surface : null,
-          border: selected ? Border.all(color: colors.outline) : null,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: iconSize, color: color),
-            const SizedBox(width: 7),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                color: color,
-              ),
-            ),
-          ],
         ),
       ),
     );
