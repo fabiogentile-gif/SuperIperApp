@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/widgets/settings/utils/default_holder_controller.dart';
 
 class NewCardData {
   const NewCardData({
     required this.storeName,
     required this.number,
     required this.category,
+    required this.holder,
   });
 
   final String storeName;
   final String number;
   final String category;
+  final String holder;
 }
 
 /// Apre il popup dal basso. Restituisce i dati della carta, o null se chiuso.
@@ -33,10 +36,17 @@ class AddCardSheet extends StatefulWidget {
 }
 
 class _AddCardSheetState extends State<AddCardSheet> {
-  static const _categories = ['Spesa', 'Farmacia', 'Abbigliamento', 'Casa', 'Altro'];
+  static const _categories = [
+    'Spesa',
+    'Farmacia',
+    'Abbigliamento',
+    'Casa',
+    'Altro',
+  ];
 
   final _store = TextEditingController();
   final _number = TextEditingController();
+  final _holder = TextEditingController(text: defaultHolderName.value);
   _InputMode _mode = _InputMode.manual; // TODO: modalità scansione
   String _category = _categories.first;
 
@@ -47,6 +57,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
   void dispose() {
     _store.dispose();
     _number.dispose();
+    _holder.dispose();
     super.dispose();
   }
 
@@ -56,6 +67,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
         storeName: _store.text.trim(),
         number: _number.text.trim(),
         category: _category,
+        holder: _holder.text.trim(),
       ),
     );
   }
@@ -80,7 +92,6 @@ class _AddCardSheetState extends State<AddCardSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Maniglia
               Center(
                 child: Container(
                   width: 36,
@@ -93,7 +104,6 @@ class _AddCardSheetState extends State<AddCardSheet> {
               ),
               const SizedBox(height: 18),
 
-              // Intestazione
               SizedBox(
                 height: 32,
                 child: Row(
@@ -112,7 +122,11 @@ class _AddCardSheetState extends State<AddCardSheet> {
                         child: SizedBox(
                           width: 32,
                           height: 32,
-                          child: Icon(Icons.close_rounded, size: 18, color: colors.onSurface),
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 18,
+                            color: colors.onSurface,
+                          ),
                         ),
                       ),
                     ),
@@ -121,7 +135,6 @@ class _AddCardSheetState extends State<AddCardSheet> {
               ),
               const SizedBox(height: 18),
 
-              // Introduzione
               Text(
                 'Le tue fedeltà, tutte qui.',
                 style: TextStyle(fontSize: 24, color: colors.onSurface),
@@ -129,7 +142,11 @@ class _AddCardSheetState extends State<AddCardSheet> {
               const SizedBox(height: 8),
               Text(
                 'Scansiona il codice o inserisci i dati della tua carta.',
-                style: TextStyle(fontSize: 14, height: 1.5, color: colors.onSurfaceVariant),
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: colors.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 18),
 
@@ -203,6 +220,23 @@ class _AddCardSheetState extends State<AddCardSheet> {
                   ),
                 ),
               ),
+              _Field(
+                label: 'Intestatario',
+                child: _FieldBox(
+                  icon: Icons.person_outline,
+                  child: TextField(
+                    controller: _holder,
+                    textCapitalization: TextCapitalization.words,
+                    cursorColor: colors.primary,
+                    style: valueStyle,
+                    decoration: InputDecoration.collapsed(
+                      hintText: 'Nome e cognome',
+                      hintStyle: hintStyle,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
               const SizedBox(height: 18),
               _Field(
                 label: 'Categoria',
@@ -219,7 +253,10 @@ class _AddCardSheetState extends State<AddCardSheet> {
                   onSelected: (v) => setState(() => _category = v),
                   itemBuilder: (_) => [
                     for (final c in _categories)
-                      PopupMenuItem(value: c, child: Text(c, style: valueStyle)),
+                      PopupMenuItem(
+                        value: c,
+                        child: Text(c, style: valueStyle),
+                      ),
                   ],
                   child: _FieldBox(
                     icon: Icons.keyboard_arrow_down_rounded,
@@ -232,11 +269,18 @@ class _AddCardSheetState extends State<AddCardSheet> {
               // Nota
               Row(
                 children: [
-                  Icon(Icons.info_outline, size: 15, color: colors.onSurfaceVariant),
+                  Icon(
+                    Icons.info_outline,
+                    size: 15,
+                    color: colors.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Puoi modificare questi dettagli quando vuoi.',
-                    style: TextStyle(fontSize: 11, color: colors.onSurfaceVariant),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: colors.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -358,7 +402,10 @@ class _Field extends StatelessWidget {
         child,
         if (helper != null) ...[
           const SizedBox(height: 8),
-          Text(helper!, style: TextStyle(fontSize: 11, color: colors.onSurfaceVariant)),
+          Text(
+            helper!,
+            style: TextStyle(fontSize: 11, color: colors.onSurfaceVariant),
+          ),
         ],
       ],
     );

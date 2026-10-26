@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:superiper_app/widgets/homepage/add_card_sheet.dart';
 
 class AddCardButton extends StatelessWidget {
-  final Function(String, String) onSave;
+  final ValueChanged<NewCardData> onSave;
 
   const AddCardButton({super.key, required this.onSave});
 
   void _handleAdd(BuildContext context) async {
     final result = await showAddCardSheet(context);
     if (result != null && context.mounted) {
-      onSave(result.storeName, result.number);
+      onSave(result);
     }
   }
 

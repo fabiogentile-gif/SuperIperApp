@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:superiper_app/providers/card_provider.dart';
 import 'package:superiper_app/widgets/app_bar.dart';
 import 'package:superiper_app/widgets/homepage/add_card_button.dart';
+import 'package:superiper_app/widgets/homepage/add_card_sheet.dart';
 import 'package:superiper_app/widgets/homepage/card_search_bar.dart';
 import 'package:superiper_app/widgets/homepage/card_grid.dart';
 
@@ -63,10 +64,17 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: AddCardButton(onSave: (name, code) {
-              widget.cardProvider.addCard(name, code);
-              _clearSearch();
-            }),
+            child: AddCardButton(
+              onSave: (NewCardData data) {
+                widget.cardProvider.addCard(
+                  data.storeName,
+                  data.number,
+                  data.holder,
+                  data.category,
+                );
+                _clearSearch();
+              },
+            ),
           ),
         ],
       ),

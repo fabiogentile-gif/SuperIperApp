@@ -1,14 +1,11 @@
-
 import 'package:flutter/material.dart';
+
 import 'card_tile.dart';
 
 class CardGrid extends StatelessWidget {
   final List<Map<String, String>> cards;
 
-  const CardGrid({
-    super.key,
-    required this.cards,
-  });
+  const CardGrid({super.key, required this.cards});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +17,7 @@ class CardGrid extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Text(
             'Nessuna carta trovata',
-            style: TextStyle(
-              color: colors.onSurfaceVariant,
-            ),
+            style: TextStyle(color: colors.onSurfaceVariant),
           ),
         ),
       );
@@ -43,6 +38,8 @@ class CardGrid extends StatelessWidget {
           return CardTile(
             name: card['name'] ?? 'Carta',
             code: card['code'] ?? '',
+            holder: card['holder'] ?? '',
+            category: card['category'] ?? '',
             icon: Icons.credit_card,
           );
         },

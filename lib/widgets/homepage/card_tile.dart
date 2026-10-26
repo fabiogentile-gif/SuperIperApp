@@ -6,7 +6,8 @@ class CardTile extends StatelessWidget {
     super.key,
     required this.name,
     required this.code,
-    this.notes,
+    this.holder = '',
+    this.category = '',
     this.icon = Icons.credit_card,
     this.accentColor,
     this.onTap,
@@ -14,7 +15,8 @@ class CardTile extends StatelessWidget {
 
   final String name;
   final String code;
-  final String? notes;
+  final String holder;
+  final String category;
   final IconData icon;
   final Color? accentColor;
   final VoidCallback? onTap;
@@ -34,7 +36,7 @@ class CardTile extends StatelessWidget {
             onTap ??
             () => showCardDetailsSheet(
               context,
-              LoyaltyCard(name: name, code: code),
+              LoyaltyCard(name: name, code: code,holder: holder,category: category),
             ),
         child: Padding(
           padding: const EdgeInsets.all(16),
