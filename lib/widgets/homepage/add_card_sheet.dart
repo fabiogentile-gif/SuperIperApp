@@ -220,6 +220,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
                   ),
                 ),
               ),
+              const SizedBox(height: 18),
               _Field(
                 label: 'Intestatario',
                 child: _FieldBox(
@@ -236,7 +237,6 @@ class _AddCardSheetState extends State<AddCardSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 18),
               const SizedBox(height: 18),
               _Field(
                 label: 'Categoria',
