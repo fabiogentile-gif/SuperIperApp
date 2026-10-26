@@ -33,6 +33,35 @@ Future<void> showCardDetailsSheet(
               Navigator.of(sheetContext).pop();
               onEdit();
             },
+      onDelete: () async {
+        final shouldDelete = await showDialog<bool>(
+          context: sheetContext,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Eliminare la carta?'),
+            content: Text('Vuoi davvero eliminare ${card.name}?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Annulla'),
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(dialogContext).colorScheme.error,
+                ),
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Elimina'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldDelete != true) return;
+
+        provider.deleteCard(card.code);
+        if (sheetContext.mounted) {
+          Navigator.of(sheetContext).pop();
+        }
+      },
     ),
   );
 }
@@ -43,12 +72,14 @@ class _CardDetailsSheet extends StatelessWidget {
     required this.provider,
     required this.onClose,
     this.onEdit,
+    required this.onDelete,
   });
 
   final LoyaltyCard card;
   final CardProvider provider;
   final VoidCallback onClose;
   final VoidCallback? onEdit;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -276,6 +307,38 @@ class _CardDetailsSheet extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: colors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: Material(
+                color: colors.errorContainer,
+                borderRadius: BorderRadius.circular(16),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: onDelete,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.delete_outline,
+                        size: 18,
+                        color: colors.onErrorContainer,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Elimina carta',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: colors.onErrorContainer,
                         ),
                       ),
                     ],

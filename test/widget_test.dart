@@ -19,4 +19,13 @@ void main() {
     expect(updated.category, 'Supermercato');
     expect(updated.holder, 'Luigi Verdi');
   });
+
+  test('deleteCard removes the card from the list', () {
+    final provider = CardProvider();
+    final original = provider.cards.first;
+
+    provider.deleteCard(original.code);
+
+    expect(provider.cards.any((card) => card.code == original.code), isFalse);
+  });
 }

@@ -53,6 +53,14 @@ class CardProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteCard(String code) {
+    final i = _cards.indexWhere((c) => c.code == code);
+    if (i == -1) return;
+
+    _cards.removeAt(i);
+    notifyListeners();
+  }
+
   void toggleFavorite(String code) {
     final i = _cards.indexWhere((c) => c.code == code);
     if (i == -1) return;
