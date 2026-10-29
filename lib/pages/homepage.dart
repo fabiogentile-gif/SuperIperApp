@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _searchController = TextEditingController();
+
   String _query = '';
 
   @override
@@ -37,6 +38,27 @@ class _HomePageState extends State<HomePage> {
   void _clearSearch() {
     _searchController.clear();
     setState(() => _query = '');
+  }
+
+  Future<void> _saveCard(NewCardData data) async {
+    final ok = await widget.cardProvider.addCard(
+      LoyaltyCard(
+        name: data.storeName,
+        code: data.number,
+        holder: data.holder,
+        category: data.category,
+        barcodeFormat: data.barcodeFormat,
+      ),
+    );
+    if (!mounted) return;
+
+    if (ok) {
+      _clearSearch();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Questa carta è già presente.')),
+      );
+    }
   }
 
   @override
@@ -65,19 +87,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: AddCardButton(
-              onSave: (NewCardData data) {
-                widget.cardProvider.addCard(
-                  LoyaltyCard(
-                    name: data.storeName,
-                    code: data.number,
-                    holder: data.holder,
-                    category: data.category,
-                  ),
-                );
-                _clearSearch();
-              },
-            ),
+            child: AddCardButton(onSave: _saveCard),
           ),
         ],
       ),

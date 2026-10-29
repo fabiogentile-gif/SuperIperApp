@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:superiper_app/pages/favorites.dart';
 import 'package:superiper_app/pages/homepage.dart';
+import 'package:superiper_app/pages/favorites.dart';
 import 'package:superiper_app/pages/settings.dart';
 import 'package:superiper_app/providers/card_provider.dart';
 import 'package:superiper_app/shell.dart';
@@ -12,7 +12,7 @@ class AppRoutes {
   static const favorites = '/favorites';
 
   // creato una sola volta per tutta l'app
-  static final CardProvider cardProvider = CardProvider();
+  static final CardProvider cardProvider = CardProvider()..load();
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {

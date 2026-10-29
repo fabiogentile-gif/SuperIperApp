@@ -4,6 +4,7 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:superiper_app/models/loyalty_card.dart';
 import 'package:superiper_app/providers/card_provider.dart';
+import 'package:superiper_app/utils/brightness.dart';
 
 Future<void> showCardDetailsSheet(
   BuildContext context,
@@ -13,7 +14,7 @@ Future<void> showCardDetailsSheet(
 }) {
   return showModalBottomSheet<void>(
     context: context,
-    useRootNavigator: true, // copre anche la bottom bar della shell
+    useRootNavigator: true,
     isScrollControlled: true,
     backgroundColor: Theme.of(context).colorScheme.surface,
     clipBehavior: Clip.antiAlias,
@@ -30,26 +31,79 @@ Future<void> showCardDetailsSheet(
               Navigator.of(sheetContext).pop();
               onEdit();
             },
+      onDelete: () async {
+        final shouldDelete = await showDialog<bool>(
+          context: sheetContext,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Eliminare la carta?'),
+            content: Text('Vuoi davvero eliminare ${card.name}?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Annulla'),
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(dialogContext).colorScheme.error,
+                ),
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Elimina'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldDelete != true) return;
+
+        provider.deleteCard(card.code);
+        if (sheetContext.mounted) {
+          Navigator.of(sheetContext).pop();
+        }
+      },
     ),
   );
 }
 
-class _CardDetailsSheet extends StatelessWidget {
+class _CardDetailsSheet extends StatefulWidget {
   const _CardDetailsSheet({
     required this.card,
     required this.provider,
     required this.onClose,
     this.onEdit,
+    required this.onDelete,
   });
 
   final LoyaltyCard card;
   final CardProvider provider;
   final VoidCallback onClose;
   final VoidCallback? onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  State<_CardDetailsSheet> createState() => _CardDetailsSheetState();
+}
+
+class _CardDetailsSheetState extends State<_CardDetailsSheet> {
+  @override
+  void initState() {
+    super.initState();
+    boostBrightnessIfEnabled();
+  }
+
+  @override
+  void dispose() {
+    restoreBrightness();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final card = widget.card;
+    final provider = widget.provider;
+    final onClose = widget.onClose;
+    final onEdit = widget.onEdit;
+    final onDelete = widget.onDelete;
 
     return SafeArea(
       top: false,
@@ -59,7 +113,7 @@ class _CardDetailsSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Maniglia
+            // Maniglia del pannello
             Container(
               width: 36,
               height: 4,
@@ -178,7 +232,7 @@ class _CardDetailsSheet extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // Codice da mostrare
+            // Codice a barre
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 18),
@@ -189,7 +243,7 @@ class _CardDetailsSheet extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Mostra il codice alla cassa',
                     style: TextStyle(fontSize: 13, color: Colors.black),
                   ),
@@ -202,14 +256,13 @@ class _CardDetailsSheet extends StatelessWidget {
                       data: card.code.replaceAll(' ', ''),
                       drawText: false,
                       color: Colors.black,
-                      backgroundColor:
-                          Colors.white, // necessario per lo scanner
+                      backgroundColor: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     _group(card.code),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
@@ -220,25 +273,22 @@ class _CardDetailsSheet extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // Informazioni
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _Info(label: 'Intestatario', value: card.holder),
-                  ),
-                  const SizedBox(width: 28),
-                  Expanded(
-                    child: _Info(label: 'Tipo di carta', value: card.type),
-                  ),
-                ],
-              ),
+            // Informazioni della carta
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _Info(label: 'Intestatario', value: card.holder),
+                ),
+                const SizedBox(width: 28),
+                Expanded(
+                  child: _Info(label: 'Tipo di carta', value: card.type),
+                ),
+              ],
             ),
             const SizedBox(height: 18),
 
-            // Modifica
+            // Pulsante Modifica carta
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -256,13 +306,45 @@ class _CardDetailsSheet extends StatelessWidget {
                         size: 18,
                         color: colors.primary,
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
                         'Modifica carta',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: colors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: Material(
+                color: colors.errorContainer,
+                borderRadius: BorderRadius.circular(16),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: onDelete,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.delete_outline,
+                        size: 18,
+                        color: colors.onErrorContainer,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Elimina carta',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: colors.onErrorContainer,
                         ),
                       ),
                     ],
@@ -279,6 +361,7 @@ class _CardDetailsSheet extends StatelessWidget {
 
 class _Info extends StatelessWidget {
   const _Info({required this.label, required this.value});
+
   final String label;
   final String value;
 
@@ -310,6 +393,7 @@ class _Info extends StatelessWidget {
 
 String _group(String code) {
   final c = code.replaceAll(' ', '');
+
   return [
     for (var i = 0; i < c.length; i += 4) c.substring(i, min(i + 4, c.length)),
   ].join(' ');
