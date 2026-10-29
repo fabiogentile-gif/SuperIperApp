@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:superiper_app/widgets/homepage/scanner_page.dart';
 import 'package:superiper_app/models/loyalty_card.dart';
 import 'package:superiper_app/providers/card_provider.dart';
 import 'package:superiper_app/widgets/settings/utils/default_holder_controller.dart';
@@ -9,12 +10,14 @@ class NewCardData {
     required this.number,
     required this.category,
     required this.holder,
+    this.barcodeFormat = 'CODE_128',
   });
 
   final String storeName;
   final String number;
   final String category;
   final String holder;
+  final String barcodeFormat;
 }
 
 /// Apre il popup dal basso. Restituisce i dati della carta, o null se chiuso.
@@ -53,6 +56,7 @@ Future<void> showEditCardSheet(
     code: result.number,
     category: result.category,
     holder: result.holder,
+    barcodeFormat: result.barcodeFormat,
   );
 }
 
@@ -86,8 +90,26 @@ class _AddCardSheetState extends State<AddCardSheet> {
   final _store = TextEditingController();
   final _number = TextEditingController();
   final _holder = TextEditingController(text: defaultHolderName.value);
-  _InputMode _mode = _InputMode.manual; // TODO: modalità scansione
+  _InputMode _mode = _InputMode.manual;
   String _category = _categories.first;
+
+  String _barcodeFormat = 'CODE_128';
+  String? _scannedValue;
+
+  Future<void> _scan() async {
+    final result = await Navigator.of(context).push<Map<String, String>>(
+      MaterialPageRoute(builder: (_) => const ScannerPage()),
+    );
+
+    if (result == null || !mounted) return;
+
+    setState(() {
+      _number.text = result['barcode']!;
+      _scannedValue = result['barcode'];
+      _barcodeFormat = result['format'] ?? 'CODE_128';
+      _mode = _InputMode.manual;
+    });
+  }
 
   @override
   void initState() {
@@ -98,6 +120,8 @@ class _AddCardSheetState extends State<AddCardSheet> {
       _store.text = card.name;
       _number.text = card.code;
       _holder.text = card.holder;
+      _barcodeFormat = card.barcodeFormat;
+      _scannedValue = card.code;
       if (card.category.isNotEmpty) {
         _category = card.category;
       }
@@ -122,6 +146,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
         number: _number.text.trim(),
         category: _category,
         holder: _holder.text.trim(),
+        barcodeFormat: _barcodeFormat,
       ),
     );
   }
@@ -221,7 +246,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
                         icon: Icons.document_scanner_outlined,
                         iconSize: 17,
                         selected: _mode == _InputMode.scan,
-                        onTap: () => setState(() => _mode = _InputMode.scan),
+                        onTap: _scan,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -271,6 +296,10 @@ class _AddCardSheetState extends State<AddCardSheet> {
                       hintText: '9820 4512 7308 64',
                       hintStyle: hintStyle,
                     ),
+                    onChanged: (v) {
+                      if (v.trim() != _scannedValue)
+                        _barcodeFormat = 'CODE_128';
+                    },
                   ),
                 ),
               ),

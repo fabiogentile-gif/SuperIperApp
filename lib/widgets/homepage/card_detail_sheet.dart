@@ -1,10 +1,10 @@
-
 import 'dart:math' show min;
 
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:superiper_app/models/loyalty_card.dart';
 import 'package:superiper_app/providers/card_provider.dart';
+import 'package:superiper_app/utils/brightness.dart';
 
 Future<void> showCardDetailsSheet(
   BuildContext context,
@@ -19,9 +19,7 @@ Future<void> showCardDetailsSheet(
     backgroundColor: Theme.of(context).colorScheme.surface,
     clipBehavior: Clip.antiAlias,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(32),
-      ),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
     ),
     builder: (sheetContext) => _CardDetailsSheet(
       card: card,
@@ -66,7 +64,7 @@ Future<void> showCardDetailsSheet(
   );
 }
 
-class _CardDetailsSheet extends StatelessWidget {
+class _CardDetailsSheet extends StatefulWidget {
   const _CardDetailsSheet({
     required this.card,
     required this.provider,
@@ -82,8 +80,30 @@ class _CardDetailsSheet extends StatelessWidget {
   final VoidCallback onDelete;
 
   @override
+  State<_CardDetailsSheet> createState() => _CardDetailsSheetState();
+}
+
+class _CardDetailsSheetState extends State<_CardDetailsSheet> {
+  @override
+  void initState() {
+    super.initState();
+    boostBrightnessIfEnabled();
+  }
+
+  @override
+  void dispose() {
+    restoreBrightness();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final card = widget.card;
+    final provider = widget.provider;
+    final onClose = widget.onClose;
+    final onEdit = widget.onEdit;
+    final onDelete = widget.onDelete;
 
     return SafeArea(
       top: false,
@@ -157,11 +177,7 @@ class _CardDetailsSheet extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              card.icon,
-                              size: 30,
-                              color: card.onColor,
-                            ),
+                            Icon(card.icon, size: 30, color: card.onColor),
                             const SizedBox(width: 10),
                             Flexible(
                               child: Text(
@@ -182,8 +198,7 @@ class _CardDetailsSheet extends StatelessWidget {
                         listenable: provider,
                         builder: (_, __) => InkWell(
                           customBorder: const CircleBorder(),
-                          onTap: () =>
-                              provider.toggleFavorite(card.code),
+                          onTap: () => provider.toggleFavorite(card.code),
                           child: SizedBox(
                             width: 32,
                             height: 32,
@@ -230,10 +245,7 @@ class _CardDetailsSheet extends StatelessWidget {
                 children: [
                   const Text(
                     'Mostra il codice alla cassa',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.black),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -266,17 +278,11 @@ class _CardDetailsSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: _Info(
-                    label: 'Intestatario',
-                    value: card.holder,
-                  ),
+                  child: _Info(label: 'Intestatario', value: card.holder),
                 ),
                 const SizedBox(width: 28),
                 Expanded(
-                  child: _Info(
-                    label: 'Tipo di carta',
-                    value: card.type,
-                  ),
+                  child: _Info(label: 'Tipo di carta', value: card.type),
                 ),
               ],
             ),
@@ -354,10 +360,7 @@ class _CardDetailsSheet extends StatelessWidget {
 }
 
 class _Info extends StatelessWidget {
-  const _Info({
-    required this.label,
-    required this.value,
-  });
+  const _Info({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -392,7 +395,6 @@ String _group(String code) {
   final c = code.replaceAll(' ', '');
 
   return [
-    for (var i = 0; i < c.length; i += 4)
-      c.substring(i, min(i + 4, c.length)),
+    for (var i = 0; i < c.length; i += 4) c.substring(i, min(i + 4, c.length)),
   ].join(' ');
 }

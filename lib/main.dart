@@ -5,6 +5,7 @@ import 'package:superiper_app/theme/theme.dart';
 import 'package:superiper_app/theme/theme_controller.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

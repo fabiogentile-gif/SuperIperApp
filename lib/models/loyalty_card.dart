@@ -6,6 +6,7 @@ class LoyaltyCard {
   final String category;
   final String holder;
   final String type;
+  final String barcodeFormat;
   final IconData icon;
   final Color color;
   final Color onColor;
@@ -17,6 +18,7 @@ class LoyaltyCard {
     this.category = '',
     this.holder = '',
     this.type = 'Carta fedeltà',
+    this.barcodeFormat = 'CODE_128',
     this.icon = Icons.eco_outlined,
     this.color = const Color(0xFFDBEFE3),
     this.onColor = const Color(0xFF285943),
@@ -29,6 +31,7 @@ class LoyaltyCard {
     String? category,
     String? holder,
     String? type,
+    String? barcodeFormat,
     IconData? icon,
     Color? color,
     Color? onColor,
@@ -40,6 +43,7 @@ class LoyaltyCard {
         category: category ?? this.category,
         holder: holder ?? this.holder,
         type: type ?? this.type,
+        barcodeFormat: barcodeFormat ?? this.barcodeFormat,
         icon: icon ?? this.icon,
         color: color ?? this.color,
         onColor: onColor ?? this.onColor,

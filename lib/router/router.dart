@@ -12,7 +12,7 @@ class AppRoutes {
   static const favorites = '/favorites';
 
   // creato una sola volta per tutta l'app
-  static final CardProvider cardProvider = CardProvider();
+  static final CardProvider cardProvider = CardProvider()..load();
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
