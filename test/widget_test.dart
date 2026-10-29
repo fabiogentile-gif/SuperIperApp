@@ -1,30 +1,31 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:superiper_app/main.dart';
+import 'package:superiper_app/providers/card_provider.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('updateCard changes the saved card data', () {
+    final provider = CardProvider();
+    final original = provider.cards.first;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    provider.updateCard(
+      original.code,
+      name: 'Lidl',
+      code: '9999 8888 7777 66',
+      category: 'Supermercato',
+      holder: 'Luigi Verdi',
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    final updated = provider.cards.firstWhere((card) => card.name == 'Lidl');
+    expect(updated.code, '9999 8888 7777 66');
+    expect(updated.category, 'Supermercato');
+    expect(updated.holder, 'Luigi Verdi');
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('deleteCard removes the card from the list', () {
+    final provider = CardProvider();
+    final original = provider.cards.first;
+
+    provider.deleteCard(original.code);
+
+    expect(provider.cards.any((card) => card.code == original.code), isFalse);
   });
 }

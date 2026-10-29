@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:superiper_app/models/loyalty_card.dart';
 import 'package:superiper_app/providers/card_provider.dart';
+import 'package:superiper_app/widgets/homepage/add_card_sheet.dart';
 import 'package:superiper_app/widgets/homepage/card_detail_sheet.dart';
 
 import 'card_tile.dart';
@@ -50,6 +51,11 @@ class CardGrid extends StatelessWidget {
               context,
               card,
               provider: cardProvider,
+              onEdit: () => showEditCardSheet(
+                context,
+                card,
+                provider: cardProvider,
+              ),
             ),
           );
         },
