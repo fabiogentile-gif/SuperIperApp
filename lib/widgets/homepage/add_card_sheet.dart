@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:superiper_app/widgets/segments.dart';
-=======
 import 'package:superiper_app/widgets/homepage/scanner_page.dart';
 import 'package:superiper_app/models/loyalty_card.dart';
 import 'package:superiper_app/providers/card_provider.dart';
->>>>>>> Testing
 import 'package:superiper_app/widgets/settings/utils/default_holder_controller.dart';
 
 class NewCardData {

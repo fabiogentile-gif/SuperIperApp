@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:superiper_app/router/router.dart';
-import 'package:superiper_app/shell.dart';
 import 'package:superiper_app/theme/theme.dart';
 import 'package:superiper_app/theme/theme_controller.dart';
+import 'package:superiper_app/widgets/settings/utils/brightness.dart';
+import 'package:superiper_app/widgets/settings/utils/default_holder_controller.dart';
+import 'package:superiper_app/widgets/settings/utils/setting_controller.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  final settings = await SettingController.load();
+
+  themeMode.value = settings.themeMode;
+  defaultHolderName.value = settings.defaultHolder;
+  autoMaxBrightness.value = settings.autoMaxBrightness;
+
+  themeMode.addListener(() => settings.setThemeMode(themeMode.value));
+  defaultHolderName.addListener(
+    () => settings.setDefaultHolder(defaultHolderName.value),
+  );
+  autoMaxBrightness.addListener(
+    () => settings.setAutoMaxBrightness(autoMaxBrightness.value),
+  );
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
@@ -24,7 +41,6 @@ class MyApp extends StatelessWidget {
         initialRoute: AppRoutes.root,
         onGenerateRoute: AppRoutes.onGenerateRoute,
         title: 'APP',
-        home: const AppShell(),
       ),
     );
   }
