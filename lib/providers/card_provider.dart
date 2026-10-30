@@ -53,7 +53,18 @@ class CardProvider extends ChangeNotifier {
     final i = _cards.indexWhere((c) => c.code == originalCode);
     if (i == -1) return;
 
-    final updated = _cards[i].copyWith(/* ...come prima */);
+    final updated = _cards[i].copyWith(
+      name: name,
+      code: code,
+      category: category,
+      holder: holder,
+      type: type,
+      icon: icon,
+      color: color,
+      onColor: onColor,
+      isFavorite: isFavorite,
+      barcodeFormat: barcodeFormat,
+    );
     await _repository.update(originalCode, updated);
     _cards[i] = updated;
     notifyListeners();
