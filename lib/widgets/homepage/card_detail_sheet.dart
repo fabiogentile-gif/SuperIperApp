@@ -104,6 +104,9 @@ class _CardDetailsSheetState extends State<_CardDetailsSheet> {
     final onClose = widget.onClose;
     final onEdit = widget.onEdit;
     final onDelete = widget.onDelete;
+    final data = card.code.replaceAll(' ', '');
+    final barcode = barcodeForFormat(card.barcodeFormat, data);
+    final isSquare = _squareBarcodes.contains(barcode.name);
 
     return SafeArea(
       top: false,
@@ -249,11 +252,11 @@ class _CardDetailsSheetState extends State<_CardDetailsSheet> {
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
-                    width: 268,
-                    height: 68,
+                    width: isSquare ? 150 : 268,
+                    height: isSquare ? 150 : 68,
                     child: BarcodeWidget(
-                      barcode: Barcode.code128(),
-                      data: card.code.replaceAll(' ', ''),
+                      barcode: barcode,
+                      data: data,
                       drawText: false,
                       color: Colors.black,
                       backgroundColor: Colors.white,
@@ -261,7 +264,7 @@ class _CardDetailsSheetState extends State<_CardDetailsSheet> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    _group(card.code),
+                    groupCode(card.code, card.barcodeFormat),
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -391,10 +394,50 @@ class _Info extends StatelessWidget {
   }
 }
 
-String _group(String code) {
+const _squareBarcodes = {'QR-Code', 'Data Matrix', 'Aztec'};
+
+/// Il simbolo da disegnare per il formato salvato. Se il formato non è
+/// supportato o il codice non è valido per quel formato, usa il Code 128.
+Barcode barcodeForFormat(String format, String data) {
+  final barcode = switch (format) {
+    'ean13' => Barcode.ean13(),
+    'ean8' => Barcode.ean8(),
+    'upcA' => Barcode.upcA(),
+    'upcE' => Barcode.upcE(),
+    'code39' => Barcode.code39(),
+    'code93' => Barcode.code93(),
+    'codabar' => Barcode.codabar(),
+    'itf' || 'itf14' || 'itf2of5' => Barcode.itf(),
+    'qrCode' => Barcode.qrCode(),
+    'dataMatrix' => Barcode.dataMatrix(),
+    'pdf417' => Barcode.pdf417(),
+    'aztec' => Barcode.aztec(),
+    _ => Barcode.code128(),
+  };
+
+  return barcode.isValid(data) ? barcode : Barcode.code128();
+}
+
+/// Il codice diviso come è stampato sulla carta per i formati a lunghezza
+/// fissa, altrimenti a gruppi di 4.
+String groupCode(String code, String format) {
   final c = code.replaceAll(' ', '');
 
-  return [
-    for (var i = 0; i < c.length; i += 4) c.substring(i, min(i + 4, c.length)),
-  ].join(' ');
+  final groups = switch ((format, c.length)) {
+    ('ean13', 13) => const [1, 6, 6],
+    ('ean8', 8) => const [4, 4],
+    ('upcA', 12) => const [1, 5, 5, 1],
+    _ => null,
+  };
+
+  if (groups == null) {
+    return [
+      for (var i = 0; i < c.length; i += 4)
+        c.substring(i, min(i + 4, c.length)),
+    ].join(' ');
+  }
+
+  var start = 0;
+  return [for (final length in groups) c.substring(start, start += length)]
+      .join(' ');
 }
