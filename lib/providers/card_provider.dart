@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:superiper_app/features/cards/data/card_repository.dart';
+import 'package:superiper_app/data/card_repository.dart';
 import 'package:superiper_app/models/loyalty_card.dart';
 
 class CardProvider extends ChangeNotifier {
